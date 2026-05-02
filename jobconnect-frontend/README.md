@@ -33,7 +33,7 @@ VITE_APP_NAME=JobConnect
 npm run dev
 ```
 
-Application will be available at: `http://localhost:5173`
+Application will be available at: `http://localhost:5174`
 
 ## Project Structure
 
