@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import authApi from '../../services/api/authApi'
+import Button from '../../components/common/Button'
+import Input from '../../components/common/Input'
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -16,10 +18,7 @@ export default function Register() {
   const navigate = useNavigate()
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   const handleSubmit = async (e) => {
@@ -37,24 +36,27 @@ export default function Register() {
     }
 
     setLoading(true)
+
     try {
-      const response = await authApi.register({
-        email: formData.email,
-        password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        role: formData.role
-      })
-      
+      const { confirmPassword, ...registerData } = formData
+      const response = await authApi.register(registerData)
       const { accessToken, refreshToken, user } = response.data
+
       localStorage.setItem('accessToken', accessToken)
       localStorage.setItem('refreshToken', refreshToken)
       if (user) {
         localStorage.setItem('userId', user.id)
         localStorage.setItem('userRole', user.role)
+
+        // Role-based navigation
+        if (user.role === 'RECRUITER') {
+          navigate('/recruiter/dashboard')
+        } else {
+          navigate('/candidate/dashboard')
+        }
+      } else {
+        navigate('/jobs')
       }
-      
-      navigate('/jobs')
     } catch (err) {
       console.error('Registration error:', err)
       const errorMsg = err.response?.data?.message || err.response?.data?.error || 'Registration failed. Please try again.'
@@ -69,13 +71,20 @@ export default function Register() {
       <div className="max-w-md w-full">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            JobConnect
-          </h1>
-          <p className="mt-2 text-gray-600">Create your account to get started</p>
+          <Link to="/" className="inline-block">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-accent-600 rounded-xl flex items-center justify-center">
+                <span className="text-white font-bold text-2xl">J</span>
+              </div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                JobConnect
+              </h1>
+            </div>
+          </Link>
+          <p className="text-gray-600">Create your account to get started</p>
         </div>
 
-        {/* Registration Card */}
+        {/* Register Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
@@ -94,108 +103,139 @@ export default function Register() {
             )}
 
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                  placeholder="John"
-                />
+              <Input
+                label="First Name"
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                placeholder="John"
+                required
+              />
+              <Input
+                label="Last Name"
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Doe"
+                required
+              />
+            </div>
+
+            <Input
+              label="Email Address"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="john@example.com"
+              required
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                </svg>
+              }
+            />
+
+            <Input
+              label="Password"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              }
+            />
+
+            <Input
+              label="Confirm Password"
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              }
+            />
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                I am a <span className="text-red-500">*</span>
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'CANDIDATE' })}
+                  className={`p-4 border-2 rounded-lg transition-all ${
+                    formData.role === 'CANDIDATE'
+                      ? 'border-primary-600 bg-primary-50 text-primary-700'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <div className="text-3xl mb-2">👤</div>
+                  <div className="font-semibold">Job Seeker</div>
+                  <div className="text-xs text-gray-600">Looking for jobs</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'RECRUITER' })}
+                  className={`p-4 border-2 rounded-lg transition-all ${
+                    formData.role === 'RECRUITER'
+                      ? 'border-primary-600 bg-primary-50 text-primary-700'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <div className="text-3xl mb-2">🏢</div>
+                  <div className="font-semibold">Recruiter</div>
+                  <div className="text-xs text-gray-600">Hiring talent</div>
+                </button>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                  placeholder="Doe"
-                />
-              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+            <div className="flex items-start">
               <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
+                id="terms"
+                type="checkbox"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                placeholder="john@example.com"
+                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded mt-1"
               />
+              <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+                I agree to the{' '}
+                <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
+                  Terms of Service
+                </a>{' '}
+                and{' '}
+                <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
+                  Privacy Policy
+                </a>
+              </label>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">I am a</label>
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-              >
-                <option value="CANDIDATE">Job Seeker</option>
-                <option value="RECRUITER">Recruiter / Employer</option>
-                <option value="ADMIN">Administrator</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                placeholder="Min. 8 characters"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                placeholder="Re-enter password"
-              />
-            </div>
-
-            <button
+            <Button
               type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
+              variant="gradient"
+              fullWidth
+              size="lg"
+              loading={loading}
             >
-              {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Creating Account...
-                </span>
-              ) : (
-                'Create Account'
-              )}
-            </button>
+              Create Account
+            </Button>
           </form>
 
           <div className="text-center pt-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-700 transition">
+              <Link to="/login" className="font-semibold text-primary-600 hover:text-primary-700 transition">
                 Sign in
               </Link>
             </p>
@@ -204,7 +244,7 @@ export default function Register() {
 
         {/* Footer */}
         <p className="mt-8 text-center text-xs text-gray-500">
-          By creating an account, you agree to our Terms of Service and Privacy Policy
+          By signing up, you agree to our terms and privacy policy
         </p>
       </div>
     </div>

@@ -1,138 +1,254 @@
 import { Link } from 'react-router-dom'
+import Navbar from '../../components/common/Navbar'
+import Button from '../../components/common/Button'
+import Card from '../../components/common/Card'
 
 export default function Home() {
+  const features = [
+    {
+      icon: '🔍',
+      title: 'Smart Job Search',
+      description: 'Find your perfect job with advanced filters and AI-powered recommendations'
+    },
+    {
+      icon: '⚡',
+      title: 'Quick Apply',
+      description: 'Apply to multiple jobs with one click using your saved profile'
+    },
+    {
+      icon: '📊',
+      title: 'Track Applications',
+      description: 'Monitor your application status and get real-time updates'
+    },
+    {
+      icon: '🎯',
+      title: 'Perfect Match',
+      description: 'Get matched with jobs that fit your skills and experience'
+    },
+    {
+      icon: '💼',
+      title: 'Top Companies',
+      description: 'Connect with leading companies actively hiring'
+    },
+    {
+      icon: '🚀',
+      title: 'Career Growth',
+      description: 'Access resources and tools to advance your career'
+    }
+  ]
+
+  const stats = [
+    { number: '10,000+', label: 'Active Jobs' },
+    { number: '5,000+', label: 'Companies' },
+    { number: '50,000+', label: 'Job Seekers' },
+    { number: '95%', label: 'Success Rate' }
+  ]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            JobConnect
-          </h1>
-          <div className="flex gap-4">
-            <Link
-              to="/login"
-              className="px-6 py-2 text-gray-700 hover:text-blue-600 font-medium transition"
-            >
-              Sign In
-            </Link>
-            <Link
-              to="/register"
-              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105"
-            >
-              Get Started
-            </Link>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-accent-600 text-white overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                Find Your Dream Job Today
+              </h1>
+              <p className="text-xl text-blue-100 mb-8 leading-relaxed">
+                Connect with top employers and discover opportunities that match your skills and aspirations. Your next career move starts here.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Link to="/jobs">
+                  <Button variant="gradient" size="xl" className="bg-white text-primary-600 hover:bg-gray-100">
+                    Browse Jobs
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button variant="outline" size="xl" className="border-white text-white hover:bg-white hover:text-primary-600">
+                    Get Started Free
+                  </Button>
+                </Link>
+              </div>
+              
+              {/* Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+                {stats.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className="text-3xl font-bold mb-1">{stat.number}</div>
+                    <div className="text-blue-100 text-sm">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="hidden lg:block">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-accent-400 to-primary-400 rounded-3xl transform rotate-6 opacity-20"></div>
+                <div className="relative bg-white rounded-3xl p-8 shadow-2xl">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                      <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-accent-400 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                        J
+                      </div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-blue-400 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                        C
+                      </div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                        T
+                      </div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-gray-200 rounded w-4/5 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-2/5"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </nav>
+      </section>
 
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            Find Your Dream Job or
-            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Hire Top Talent
-            </span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Connect with thousands of opportunities or discover the perfect candidate for your team.
-            Your career journey starts here.
+      {/* Features Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose JobConnect?</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Everything you need to find your next opportunity or hire top talent
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card key={index} hover className="text-center">
+                <div className="text-5xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <p className="text-xl text-gray-600">Get started in three simple steps</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="text-center relative">
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                1
+              </div>
+              <div className="pt-8">
+                <div className="text-5xl mb-4">📝</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Create Your Profile</h3>
+                <p className="text-gray-600">Sign up and build your professional profile in minutes</p>
+              </div>
+            </Card>
+
+            <Card className="text-center relative">
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                2
+              </div>
+              <div className="pt-8">
+                <div className="text-5xl mb-4">🔍</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Search & Apply</h3>
+                <p className="text-gray-600">Browse thousands of jobs and apply with one click</p>
+              </div>
+            </Card>
+
+            <Card className="text-center relative">
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                3
+              </div>
+              <div className="pt-8">
+                <div className="text-5xl mb-4">🎉</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Get Hired</h3>
+                <p className="text-gray-600">Connect with employers and land your dream job</p>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-primary-600 to-accent-600 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold mb-6">Ready to Take the Next Step?</h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Join thousands of professionals who found their dream jobs through JobConnect
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/register"
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105 shadow-lg"
-            >
-              Get Started Free
+            <Link to="/register">
+              <Button variant="gradient" size="xl" className="bg-white text-primary-600 hover:bg-gray-100">
+                Sign Up Now
+              </Button>
             </Link>
-            <Link
-              to="/jobs"
-              className="px-8 py-4 bg-white text-gray-700 rounded-lg font-semibold text-lg hover:bg-gray-50 transition border-2 border-gray-200 shadow-lg"
-            >
-              Browse Jobs
+            <Link to="/jobs">
+              <Button variant="outline" size="xl" className="border-white text-white hover:bg-white hover:text-primary-600">
+                Explore Jobs
+              </Button>
             </Link>
           </div>
         </div>
-
-        {/* Features */}
-        <div className="grid md:grid-cols-3 gap-8 mt-20">
-          <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">For Job Seekers</h3>
-            <p className="text-gray-600">
-              Browse thousands of job opportunities, apply with one click, and track your applications in real-time.
-            </p>
-          </div>
-
-          <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">For Recruiters</h3>
-            <p className="text-gray-600">
-              Post jobs, manage applications, and find the perfect candidates for your team efficiently.
-            </p>
-          </div>
-
-          <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Secure & Trusted</h3>
-            <p className="text-gray-600">
-              Your data is protected with industry-standard encryption. Join thousands of satisfied users.
-            </p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="mt-20 bg-white rounded-2xl shadow-xl p-12">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                10,000+
-              </div>
-              <div className="text-gray-600 font-medium">Active Jobs</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                50,000+
-              </div>
-              <div className="text-gray-600 font-medium">Job Seekers</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                5,000+
-              </div>
-              <div className="text-gray-600 font-medium">Companies</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 mt-20">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-4">JobConnect</h2>
-          <p className="text-gray-400 mb-6">Connecting talent with opportunity</p>
-          <div className="flex justify-center gap-6 text-sm text-gray-400">
-            <a href="#" className="hover:text-white transition">About</a>
-            <a href="#" className="hover:text-white transition">Privacy</a>
-            <a href="#" className="hover:text-white transition">Terms</a>
-            <a href="#" className="hover:text-white transition">Contact</a>
+      <footer className="bg-gray-900 text-gray-300 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-white font-bold text-xl mb-4">JobConnect</h3>
+              <p className="text-sm">Connecting talent with opportunity</p>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">For Job Seekers</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/jobs" className="hover:text-white transition-colors">Browse Jobs</Link></li>
+                <li><Link to="/register" className="hover:text-white transition-colors">Create Profile</Link></li>
+                <li><Link to="/candidate/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">For Employers</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/recruiter/dashboard" className="hover:text-white transition-colors">Post a Job</Link></li>
+                <li><Link to="/register" className="hover:text-white transition-colors">Sign Up</Link></li>
+                <li><Link to="/recruiter/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              </ul>
+            </div>
           </div>
-          <p className="text-gray-500 text-sm mt-6">
-            © 2024 JobConnect. All rights reserved.
-          </p>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+            <p>&copy; 2024 JobConnect. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>

@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import applicationApi from '../../services/api/applicationApi'
 import Navbar from '../../components/common/Navbar'
+import Card from '../../components/common/Card'
+import Badge from '../../components/common/Badge'
+import Button from '../../components/common/Button'
+import Loading from '../../components/common/Loading'
+import applicationApi from '../../services/api/applicationApi'
 
 export default function CandidateDashboard() {
   const [applications, setApplications] = useState([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState('overview')
   const [stats, setStats] = useState({
-    totalApplications: 0,
-    pending: 0,
-    interviewed: 0,
+    total: 0,
+    applied: 0,
+    shortlisted: 0,
+    interview: 0,
     rejected: 0
   })
 
@@ -20,15 +24,18 @@ export default function CandidateDashboard() {
 
   const fetchApplications = async () => {
     try {
-      const candidateId = localStorage.getItem('userId')
-      const response = await applicationApi.getApplicationsByCandidate(candidateId, { page: 0, size: 10 })
+      setLoading(true)
+      const candidateId = localStorage.getItem('candidateId') || 1
+      const response = await applicationApi.getApplicationsByCandidate(candidateId, { page: 0, size: 20 })
       const apps = response.data.content || []
       setApplications(apps)
       
+      // Calculate stats
       setStats({
-        totalApplications: apps.length,
-        pending: apps.filter(a => a.applicationStatus === 'PENDING').length,
-        interviewed: apps.filter(a => a.applicationStatus === 'INTERVIEWED').length,
+        total: apps.length,
+        applied: apps.filter(a => a.applicationStatus === 'APPLIED').length,
+        shortlisted: apps.filter(a => a.applicationStatus === 'SHORTLISTED').length,
+        interview: apps.filter(a => a.applicationStatus === 'INTERVIEW').length,
         rejected: apps.filter(a => a.applicationStatus === 'REJECTED').length
       })
     } catch (error) {
@@ -38,29 +45,31 @@ export default function CandidateDashboard() {
     }
   }
 
-  const getStatusColor = (status) => {
-    const colors = {
-      PENDING: 'bg-yellow-100 text-yellow-800',
-      REVIEWED: 'bg-blue-100 text-blue-800',
-      SHORTLISTED: 'bg-purple-100 text-purple-800',
-      INTERVIEWED: 'bg-indigo-100 text-indigo-800',
-      OFFERED: 'bg-green-100 text-green-800',
-      REJECTED: 'bg-red-100 text-red-800',
-      WITHDRAWN: 'bg-gray-100 text-gray-800'
+  const getStatusBadge = (status) => {
+    const variants = {
+      APPLIED: 'info',
+      SHORTLISTED: 'warning',
+      INTERVIEW: 'purple',
+      REJECTED: 'danger',
+      WITHDRAWN: 'default',
+      HIRED: 'success'
     }
-    return colors[status] || 'bg-gray-100 text-gray-800'
+    return variants[status] || 'default'
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your dashboard...</p>
-        </div>
-      </div>
-    )
+  const getStatusIcon = (status) => {
+    const icons = {
+      APPLIED: '📝',
+      SHORTLISTED: '⭐',
+      INTERVIEW: '🎯',
+      REJECTED: '❌',
+      WITHDRAWN: '↩️',
+      HIRED: '🎉'
+    }
+    return icons[status] || '📄'
   }
+
+  if (loading) return <Loading fullScreen text="Loading your dashboard..." />
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -69,164 +78,200 @@ export default function CandidateDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Candidate Dashboard</h1>
-          <p className="mt-2 text-gray-600">Track your applications and find your dream job</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">My Dashboard</h1>
+          <p className="text-lg text-gray-600">Track your job applications and career progress</p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Applications</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalApplications}</p>
+                <p className="text-blue-100 text-sm font-medium mb-1">Total Applications</p>
+                <p className="text-4xl font-bold">{stats.total}</p>
               </div>
-              <div className="bg-blue-100 p-3 rounded-lg">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">📊</span>
               </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <Card className="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending</p>
-                <p className="text-3xl font-bold text-yellow-600 mt-2">{stats.pending}</p>
+                <p className="text-yellow-100 text-sm font-medium mb-1">Applied</p>
+                <p className="text-4xl font-bold">{stats.applied}</p>
               </div>
-              <div className="bg-yellow-100 p-3 rounded-lg">
-                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">📝</span>
               </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Interviewed</p>
-                <p className="text-3xl font-bold text-indigo-600 mt-2">{stats.interviewed}</p>
+                <p className="text-orange-100 text-sm font-medium mb-1">Shortlisted</p>
+                <p className="text-4xl font-bold">{stats.shortlisted}</p>
               </div>
-              <div className="bg-indigo-100 p-3 rounded-lg">
-                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">⭐</span>
               </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Rejected</p>
-                <p className="text-3xl font-bold text-red-600 mt-2">{stats.rejected}</p>
+                <p className="text-purple-100 text-sm font-medium mb-1">Interviews</p>
+                <p className="text-4xl font-bold">{stats.interview}</p>
               </div>
-              <div className="bg-red-100 p-3 rounded-lg">
-                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">🎯</span>
               </div>
             </div>
-          </div>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-green-100 text-sm font-medium mb-1">Success Rate</p>
+                <p className="text-4xl font-bold">
+                  {stats.total > 0 ? Math.round(((stats.shortlisted + stats.interview) / stats.total) * 100) : 0}%
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">📈</span>
+              </div>
+            </div>
+          </Card>
         </div>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Link to="/jobs" className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white hover:from-blue-600 hover:to-blue-700 transition transform hover:scale-105">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold">Browse Jobs</h3>
-                <p className="text-blue-100 text-sm mt-1">Find your next opportunity</p>
-              </div>
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
+          <Link to="/jobs">
+            <Card hover className="text-center bg-gradient-to-br from-primary-50 to-accent-50 border-primary-200">
+              <div className="text-4xl mb-3">🔍</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Browse Jobs</h3>
+              <p className="text-sm text-gray-600">Discover new opportunities</p>
+            </Card>
           </Link>
 
-          <Link to="/candidate/profile" className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white hover:from-purple-600 hover:to-purple-700 transition transform hover:scale-105">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold">Update Profile</h3>
-                <p className="text-purple-100 text-sm mt-1">Keep your profile current</p>
-              </div>
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
+          <Link to="/candidate/profile">
+            <Card hover className="text-center bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
+              <div className="text-4xl mb-3">👤</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Update Profile</h3>
+              <p className="text-sm text-gray-600">Keep your profile current</p>
+            </Card>
           </Link>
 
-          <Link to="/candidate/saved-jobs" className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white hover:from-green-600 hover:to-green-700 transition transform hover:scale-105">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold">Saved Jobs</h3>
-                <p className="text-green-100 text-sm mt-1">View your bookmarks</p>
-              </div>
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-              </svg>
-            </div>
+          <Link to="/candidate/resumes">
+            <Card hover className="text-center bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
+              <div className="text-4xl mb-3">📄</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Upload Resume</h3>
+              <p className="text-sm text-gray-600">Update your resume</p>
+            </Card>
           </Link>
         </div>
 
         {/* Applications List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900">My Applications</h2>
+        <Card>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">My Applications</h2>
+            <div className="flex gap-2">
+              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm">
+                <option>All Status</option>
+                <option>Applied</option>
+                <option>Shortlisted</option>
+                <option>Interview</option>
+                <option>Rejected</option>
+              </select>
+            </div>
           </div>
-          
-          <div className="p-6">
-            {applications.length === 0 ? (
-              <div className="text-center py-12">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <h3 className="mt-2 text-sm font-medium text-gray-900">No applications yet</h3>
-                <p className="mt-1 text-sm text-gray-500">Get started by applying to jobs that match your skills</p>
-                <div className="mt-6">
-                  <Link to="/jobs" className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                    Browse Jobs
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {applications.map((app) => (
-                  <div key={app.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900">{app.job?.title || 'Job Title'}</h3>
-                        <p className="text-gray-600 mt-1">{app.job?.company?.name || 'Company Name'}</p>
-                        <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
-                          <span className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            {app.job?.location || 'Location'}
-                          </span>
-                          <span className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            Applied {new Date(app.createdAt).toLocaleDateString()}
-                          </span>
+
+          {applications.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">📭</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No applications yet</h3>
+              <p className="text-gray-600 mb-6">Start applying to jobs to see them here</p>
+              <Link to="/jobs">
+                <Button variant="gradient">Browse Jobs</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {applications.map((application) => (
+                <div
+                  key={application.id}
+                  className="border border-gray-200 rounded-lg p-6 hover:border-primary-300 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-2xl">{getStatusIcon(application.applicationStatus)}</span>
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {application.job?.title || 'Job Title'}
+                          </h3>
+                          <p className="text-gray-600">{application.job?.company?.name || 'Company'}</p>
                         </div>
                       </div>
-                      <div className="ml-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(app.applicationStatus)}`}>
-                          {app.applicationStatus}
-                        </span>
+
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <Badge variant={getStatusBadge(application.applicationStatus)}>
+                          {application.applicationStatus}
+                        </Badge>
+                        {application.job?.jobType && (
+                          <Badge variant="default">{application.job.jobType.replace('_', ' ')}</Badge>
+                        )}
+                        {application.job?.location && (
+                          <Badge variant="default">
+                            📍 {application.job.location}
+                          </Badge>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-6 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          Applied {new Date(application.createdAt).toLocaleDateString()}
+                        </div>
+                        {application.rating && (
+                          <div className="flex items-center">
+                            <svg className="w-4 h-4 mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                            Rating: {application.rating}/5
+                          </div>
+                        )}
                       </div>
                     </div>
+
+                    <div className="flex flex-col gap-2">
+                      <Link to={`/jobs/${application.job?.id}`}>
+                        <Button variant="outline" size="sm">View Job</Button>
+                      </Link>
+                      {application.applicationStatus === 'APPLIED' && (
+                        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                          Withdraw
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+
+                  {application.reviewNotes && (
+                    <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-sm font-medium text-blue-900 mb-1">Recruiter Notes:</p>
+                      <p className="text-sm text-blue-800">{application.reviewNotes}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
       </div>
     </div>
   )
