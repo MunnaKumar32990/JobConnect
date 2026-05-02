@@ -11,6 +11,8 @@ const jobApi = {
   
   getJobsByStatus: (status, params) => apiClient.get(`/jobs/status/${status}`, { params }),
   
+  getJobsByRecruiter: (recruiterId, params) => apiClient.get(`/jobs/recruiter/${recruiterId}`, { params }),
+  
   createJob: (jobData) => apiClient.post('/jobs', jobData),
   
   updateJob: (id, jobData) => apiClient.put(`/jobs/${id}`, jobData),

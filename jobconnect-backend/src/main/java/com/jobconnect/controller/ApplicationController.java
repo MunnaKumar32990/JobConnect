@@ -41,6 +41,12 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.getApplicationsByCandidate(candidateId, pageable));
     }
 
+    @GetMapping("/recruiter/{recruiterId}")
+    @PreAuthorize("hasRole('RECRUITER')")
+    public ResponseEntity<Page<Application>> getApplicationsByRecruiter(@PathVariable Long recruiterId, Pageable pageable) {
+        return ResponseEntity.ok(applicationService.getApplicationsByRecruiter(recruiterId, pageable));
+    }
+
     @GetMapping("/status/{status}")
     public ResponseEntity<Page<Application>> getApplicationsByStatus(@PathVariable ApplicationStatus status, Pageable pageable) {
         return ResponseEntity.ok(applicationService.getApplicationsByStatus(status, pageable));

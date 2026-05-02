@@ -42,6 +42,10 @@ public class JobService {
         return jobRepository.findByStatus(status, pageable);
     }
 
+    public Page<Job> getJobsByRecruiter(Long recruiterId, Pageable pageable) {
+        return jobRepository.findByPostedById(recruiterId, pageable);
+    }
+
     public Page<Job> searchJobs(String keyword, String location, JobType jobType, 
                                 ExperienceLevel experienceLevel, BigDecimal minSalary, 
                                 Boolean isRemote, Pageable pageable) {

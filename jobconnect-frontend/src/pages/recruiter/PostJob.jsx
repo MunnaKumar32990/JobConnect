@@ -43,12 +43,31 @@ export default function PostJob() {
     setLoading(true)
 
     try {
-      await jobApi.createJob(formData)
+      const userId = localStorage.getItem('userId')
+      const companyId = localStorage.getItem('companyId') // Assuming company is stored
+      
+      if (!userId) {
+        alert('User not authenticated. Please login again.')
+        navigate('/login')
+        return
+      }
+
+      const jobData = {
+        ...formData,
+        postedBy: { id: parseInt(userId) },
+        company: companyId ? { id: parseInt(companyId) } : null,
+        salaryMin: formData.salaryMin ? parseFloat(formData.salaryMin) : null,
+        salaryMax: formData.salaryMax ? parseFloat(formData.salaryMax) : null,
+        isRemote: formData.jobType === 'REMOTE' || formData.location.toLowerCase().includes('remote')
+      }
+
+      await jobApi.createJob(jobData)
       alert('Job posted successfully!')
       navigate('/recruiter/dashboard')
     } catch (error) {
       console.error('Error posting job:', error)
-      alert('Failed to post job. Please try again.')
+      const errorMsg = error.response?.data?.message || 'Failed to post job. Please try again.'
+      alert(errorMsg)
     } finally {
       setLoading(false)
     }

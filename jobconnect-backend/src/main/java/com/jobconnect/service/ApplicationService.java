@@ -35,6 +35,10 @@ public class ApplicationService {
         return applicationRepository.findByCandidateId(candidateId, pageable);
     }
 
+    public Page<Application> getApplicationsByRecruiter(Long recruiterId, Pageable pageable) {
+        return applicationRepository.findByJobPostedById(recruiterId, pageable);
+    }
+
     public Page<Application> getApplicationsByStatus(ApplicationStatus status, Pageable pageable) {
         return applicationRepository.findByApplicationStatus(status, pageable);
     }

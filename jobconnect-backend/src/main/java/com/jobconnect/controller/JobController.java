@@ -55,6 +55,12 @@ public class JobController {
         return ResponseEntity.ok(jobService.getJobsByStatus(status, pageable));
     }
 
+    @GetMapping("/recruiter/{recruiterId}")
+    @PreAuthorize("hasRole('RECRUITER')")
+    public ResponseEntity<Page<Job>> getJobsByRecruiter(@PathVariable Long recruiterId, Pageable pageable) {
+        return ResponseEntity.ok(jobService.getJobsByRecruiter(recruiterId, pageable));
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('RECRUITER')")
     public ResponseEntity<Job> createJob(@RequestBody Job job) {

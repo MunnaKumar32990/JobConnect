@@ -30,13 +30,18 @@ export default function RecruiterDashboard() {
       setLoading(true)
       const userId = localStorage.getItem('userId')
       
-      // Fetch jobs posted by recruiter
-      const jobsResponse = await jobApi.getAllJobs({ page: 0, size: 10 })
+      if (!userId) {
+        console.error('User ID not found')
+        return
+      }
+      
+      // Fetch jobs posted by this recruiter
+      const jobsResponse = await jobApi.getJobsByRecruiter(userId, { page: 0, size: 100 })
       const jobsData = jobsResponse.data.content || []
       setJobs(jobsData)
 
-      // Fetch recent applications
-      const appsResponse = await applicationApi.getAllApplications({ page: 0, size: 10 })
+      // Fetch applications for recruiter's jobs
+      const appsResponse = await applicationApi.getApplicationsByRecruiter(userId, { page: 0, size: 100 })
       const appsData = appsResponse.data.content || []
       setApplications(appsData)
 
@@ -45,12 +50,13 @@ export default function RecruiterDashboard() {
         totalJobs: jobsData.length,
         activeJobs: jobsData.filter(j => j.status === 'OPEN').length,
         totalApplications: appsData.length,
-        pendingReview: appsData.filter(a => a.applicationStatus === 'APPLIED').length,
+        pendingReview: appsData.filter(a => a.applicationStatus === 'APPLIED' || a.applicationStatus === 'PENDING').length,
         shortlisted: appsData.filter(a => a.applicationStatus === 'SHORTLISTED').length,
-        interviewed: appsData.filter(a => a.applicationStatus === 'INTERVIEW').length
+        interviewed: appsData.filter(a => a.applicationStatus === 'INTERVIEW' || a.applicationStatus === 'INTERVIEWED').length
       })
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
+      alert('Failed to load dashboard data. Please try again.')
     } finally {
       setLoading(false)
     }

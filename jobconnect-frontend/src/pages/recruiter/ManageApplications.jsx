@@ -1,48 +1,40 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Navbar from '../../components/common/Navbar'
+import Card from '../../components/common/Card'
+import Badge from '../../components/common/Badge'
+import Button from '../../components/common/Button'
+import Loading from '../../components/common/Loading'
 import applicationApi from '../../services/api/applicationApi'
 
 export default function ManageApplications() {
+  const { id: jobId } = useParams()
   const [applications, setApplications] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('ALL')
 
   useEffect(() => {
     fetchApplications()
-  }, [filter])
+  }, [filter, jobId])
 
   const fetchApplications = async () => {
     try {
-      // Mock data - replace with actual API
-      setApplications([
-        {
-          id: 1,
-          candidate: { firstName: 'John', lastName: 'Doe', email: 'john@example.com' },
-          job: { title: 'Senior Full Stack Developer', id: 1 },
-          applicationStatus: 'PENDING',
-          appliedAt: new Date().toISOString(),
-          resume: 'resume.pdf'
-        },
-        {
-          id: 2,
-          candidate: { firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com' },
-          job: { title: 'React Developer', id: 2 },
-          applicationStatus: 'REVIEWED',
-          appliedAt: new Date().toISOString(),
-          resume: 'resume.pdf'
-        },
-        {
-          id: 3,
-          candidate: { firstName: 'Mike', lastName: 'Johnson', email: 'mike@example.com' },
-          job: { title: 'Backend Engineer', id: 3 },
-          applicationStatus: 'SHORTLISTED',
-          appliedAt: new Date().toISOString(),
-          resume: 'resume.pdf'
-        }
-      ])
+      setLoading(true)
+      const userId = localStorage.getItem('userId')
+      let response
+      
+      if (jobId) {
+        // Fetch applications for specific job
+        response = await applicationApi.getApplicationsByJob(jobId, { page: 0, size: 100 })
+      } else {
+        // Fetch all applications for recruiter's jobs
+        response = await applicationApi.getApplicationsByRecruiter(userId, { page: 0, size: 100 })
+      }
+      
+      setApplications(response.data.content || [])
     } catch (error) {
       console.error('Error fetching applications:', error)
+      alert('Failed to load applications')
     } finally {
       setLoading(false)
     }
@@ -51,9 +43,8 @@ export default function ManageApplications() {
   const handleStatusChange = async (applicationId, newStatus) => {
     try {
       await applicationApi.updateApplicationStatus(applicationId, newStatus)
-      setApplications(applications.map(app => 
-        app.id === applicationId ? { ...app, applicationStatus: newStatus } : app
-      ))
+      alert('Application status updated successfully')
+      fetchApplications()
     } catch (error) {
       console.error('Error updating status:', error)
       alert('Failed to update status')
@@ -77,11 +68,7 @@ export default function ManageApplications() {
     : applications.filter(app => app.applicationStatus === filter)
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-      </div>
-    )
+    return <Loading fullScreen text="Loading applications..." />
   }
 
   return (
@@ -90,8 +77,12 @@ export default function ManageApplications() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Manage Applications</h1>
-          <p className="mt-2 text-gray-600">Review and manage candidate applications</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {jobId ? 'Job Applications' : 'Manage Applications'}
+          </h1>
+          <p className="mt-2 text-gray-600">
+            {jobId ? 'Review applications for this job' : 'Review and manage candidate applications'}
+          </p>
         </div>
 
         {/* Filter Tabs */}

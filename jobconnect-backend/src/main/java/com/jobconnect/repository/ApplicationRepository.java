@@ -18,4 +18,5 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     Page<Application> findByJobId(Long jobId, Pageable pageable);
     Page<Application> findByCandidateId(Long candidateId, Pageable pageable);
     Page<Application> findByApplicationStatus(ApplicationStatus status, Pageable pageable);
+    Page<Application> findByJobPostedById(Long recruiterId, Pageable pageable);
 }
