@@ -1,21 +1,20 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15-alpine
+  mysql:
+    image: mysql:8.0
     container_name: jobconnect-db
     environment:
-      POSTGRES_DB: jobconnect_db
-      POSTGRES_USER: jobconnect
-      POSTGRES_PASSWORD: jobconnect123
+      MYSQL_DATABASE: jobconnect_db
+      MYSQL_ROOT_PASSWORD: root
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     networks:
       - jobconnect-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jobconnect"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,14 +25,14 @@ services:
       dockerfile: Dockerfile
     container_name: jobconnect-backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/jobconnect_db
-      SPRING_DATASOURCE_USERNAME: jobconnect
-      SPRING_DATASOURCE_PASSWORD: jobconnect123
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/jobconnect_db?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
       JWT_SECRET: your-super-secret-jwt-key-that-is-at-least-256-bits-long-for-security
     ports:
       - "8080:8080"
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
     networks:
       - jobconnect-network
@@ -53,7 +52,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
+  mysql_data:
 
 networks:
   jobconnect-network:

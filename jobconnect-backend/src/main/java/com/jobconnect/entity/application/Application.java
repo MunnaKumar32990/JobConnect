@@ -20,7 +20,7 @@ import java.time.LocalDate;
     @Index(name = "idx_applications_job_id", columnList = "job_id"),
     @Index(name = "idx_applications_candidate_id", columnList = "candidate_id"),
     @Index(name = "idx_applications_status", columnList = "application_status"),
-    @Index(name = "idx_applications_applied_at", columnList = "applied_at"),
+    @Index(name = "idx_applications_created_at", columnList = "created_at"),
     @Index(name = "idx_applications_applied_by", columnList = "applied_by")
 },
 uniqueConstraints = @UniqueConstraint(columnNames = {"job_id", "candidate_id"}))

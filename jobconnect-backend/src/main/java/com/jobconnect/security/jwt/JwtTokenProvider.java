@@ -96,7 +96,7 @@ public class JwtTokenProvider {
     public Claims getAllClaimsFromToken(String token) {
         SecretKey key = getSigningKey();
 
-        return Jwts.parserBuilder()
+        return Jwts.parser()
             .setSigningKey(key)
             .build()
             .parseClaimsJws(token)
@@ -109,7 +109,7 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             SecretKey key = getSigningKey();
-            Jwts.parserBuilder()
+            Jwts.parser()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token);

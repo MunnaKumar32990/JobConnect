@@ -1,4 +1,3 @@
-import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/public/Home'
 import Login from './pages/auth/Login'
@@ -7,6 +6,7 @@ import JobList from './pages/jobs/JobList'
 import JobDetail from './pages/jobs/JobDetail'
 import CandidateDashboard from './pages/candidate/CandidateDashboard'
 import RecruiterDashboard from './pages/recruiter/RecruiterDashboard'
+import AdminDashboard from './pages/admin/AdminDashboard'
 
 function App() {
   return (
@@ -19,6 +19,7 @@ function App() {
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
         <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   )

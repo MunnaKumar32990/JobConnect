@@ -9,7 +9,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL15Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         jdbc:
           batch_size: 20
@@ -18,10 +18,10 @@ spring:
 
   # DataSource Configuration
   datasource:
-    url: jdbc:postgresql://localhost:5432/jobconnect_db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:mysql://localhost:3306/jobconnect_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: munna@6556
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -54,7 +54,7 @@ logging:
 # Application Custom Configuration
 app:
   jwt:
-    secret: "your-secret-key-min-32-chars-minimum-for-security"
+    secret: "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437367639792F423F4528482B4D6251655468576D5A7134743777217A25432A462D4A"
     access-token-expiration: 900000 # 15 minutes in milliseconds
     refresh-token-expiration: 604800000 # 7 days in milliseconds
   
@@ -64,8 +64,8 @@ app:
     allowed-extensions: pdf,docx,doc
   
   cors:
-    allowed-origins: http://localhost:3000,http://localhost:5173
-    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-origins: http://localhost:3000,http://localhost:5173,http://localhost:5174
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
     allowed-headers: "*"
     max-age: 3600
 

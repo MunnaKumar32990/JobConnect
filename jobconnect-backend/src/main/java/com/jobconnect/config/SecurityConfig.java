@@ -47,13 +47,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors()
-                .and()
-            .csrf()
-                .disable()
-            .sessionManagement()
+            .cors(cors -> cors.configure(http))
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+            )
             .authorizeHttpRequests(authz -> authz
                 // Public endpoints
                 .requestMatchers(

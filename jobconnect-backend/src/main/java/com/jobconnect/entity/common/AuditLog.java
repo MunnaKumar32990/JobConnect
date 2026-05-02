@@ -1,16 +1,13 @@
 package com.jobconnect.entity.common;
 
 import com.jobconnect.entity.auth.User;
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * Audit log entity - Audit trail for compliance and security
@@ -45,13 +42,11 @@ public class AuditLog {
     @Column(name = "entity_id")
     private Long entityId;
 
-    @Type(JsonBinaryType.class)
-    @Column(name = "old_values", columnDefinition = "jsonb")
-    private Map<String, Object> oldValues;
+    @Column(name = "old_values", columnDefinition = "TEXT")
+    private String oldValues;
 
-    @Type(JsonBinaryType.class)
-    @Column(name = "new_values", columnDefinition = "jsonb")
-    private Map<String, Object> newValues;
+    @Column(name = "new_values", columnDefinition = "TEXT")
+    private String newValues;
 
     @Column(name = "ip_address", length = 45)
     private String ipAddress;
