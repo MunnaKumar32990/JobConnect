@@ -624,6 +624,6 @@ We welcome contributions! Please follow these steps:
 
 ⭐ Star us on GitHub — it helps!
 
-[Report Bug](https://github.com/MunnaKumar32990/jobconnect/issues) • [Request Feature](https://github.com/yourusername/jobconnect/issues)
+[Report Bug](https://github.com/MunnaKumar32990/jobconnect/issues) • [Request Feature](https://github.com/MunnaKumar32990/jobconnect/issues)
 
 </div>
