@@ -546,55 +546,10 @@ const API_BASE_URL = 'http://localhost:8080/api/v1'
 
 ---
 
-## 📸 Screenshots
-
-### Home Page
-![Home Page](https://via.placeholder.com/800x400?text=Home+Page)
-
-### Candidate Dashboard
-![Candidate Dashboard](https://via.placeholder.com/800x400?text=Candidate+Dashboard)
-
-### Recruiter Dashboard
-![Recruiter Dashboard](https://via.placeholder.com/800x400?text=Recruiter+Dashboard)
-
-### Admin Dashboard
-![Admin Dashboard](https://via.placeholder.com/800x400?text=Admin+Dashboard)
-
-### Job Listing
-![Job Listing](https://via.placeholder.com/800x400?text=Job+Listing)
 
 ---
 
-## 🚀 Deployment
 
-### Backend Deployment (Heroku)
-
-```bash
-# Login to Heroku
-heroku login
-
-# Create app
-heroku create jobconnect-backend
-
-# Add MySQL addon
-heroku addons:create jawsdb:kitefin
-
-# Deploy
-git push heroku main
-```
-
-### Frontend Deployment (Vercel)
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-cd jobconnect-frontend
-vercel --prod
-```
-
----
 
 ## 🧪 Testing
 
@@ -626,15 +581,11 @@ We welcome contributions! Please follow these steps:
 
 ---
 
-## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
 
 ## 👨‍💻 Authors
 
-- **Your Name** - *Initial work* - [GitHub Profile](https://github.com/yourusername)
+- **Your Name** - *Munna Kumar* - [GitHub Profile](https://github.com/MunnaKumar32990)
 
 ---
 
@@ -648,9 +599,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📞 Support
 
-For support, email support@jobconnect.com or join our Slack channel.
 
 ---
 
@@ -675,6 +624,6 @@ For support, email support@jobconnect.com or join our Slack channel.
 
 ⭐ Star us on GitHub — it helps!
 
-[Report Bug](https://github.com/yourusername/jobconnect/issues) • [Request Feature](https://github.com/yourusername/jobconnect/issues)
+[Report Bug](https://github.com/MunnaKumar32990/jobconnect/issues) • [Request Feature](https://github.com/yourusername/jobconnect/issues)
 
 </div>
